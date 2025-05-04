@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Blogger Settings</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Blogger Settings</h1>
+        <form th:action="@{/blogger-settings}" method="post">
+            <div class="form-group">
+                <label for="bloggerApiKey">Blogger API Key:</label>
+                <input type="text" id="bloggerApiKey" name="bloggerApiKey" class="form-control"/>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</body>
+</html>
