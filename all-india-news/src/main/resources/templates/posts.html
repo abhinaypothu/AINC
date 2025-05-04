@@ -2,27 +2,89 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Posts</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
-    <div class="container">
-        <h1>Posts</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Content</th>
-                </tr>
-            </thead>
-            <tbody>
-                <th:block th:each="post : ${posts}">
-                    <tr>
-                        <td th:text="${post.title}"></td>
-                        <td th:text="${post.content}"></td>
-                    </tr>
-                </th:block>
-            </tbody>
-        </table>
-    </div>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/posts">Posts</a></li>
+            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                <li><a href="/logout" onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </th:block>
+            <th:block th:unless="${#authorization.expression('isAuthenticated()')}">
+                <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                <li><a href="/register"><i class="fas fa-user-plus"></i> Register</a></li>
+            </th:block>
+            <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;"></form>
+        </ul>
+    </nav>
+    <h1>Posts</h1>
+    <a href="/posts/new">Create New Post</a>
+    <table>
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" /></th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="post : ${posts}">
+                <td>
+                    <input type="checkbox" name="postId" th:value="${post.id}" />
+                </td>
+                <td th:text="${post.title}"></td>
+                <td th:text="${post.content}"></td>
+                <td>
+                    <a th:href="@{/posts/edit/{id}(id=${post.id})}">Edit</a>
+                    <a th:href="@{/posts/delete/{id}(id=${post.id})}">Delete</a>
+                    <a th:href="@{/posts/view/{id}(id=${post.id})}">View</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <select id="bulkAction">
+        <option value="">Bulk Action</option>
+        <option value="delete">Delete</option>
+        <option value="publish">Publish to Blogger (Future)</option>
+    </select>
+    <button onclick="performBulkAction()">Apply</button>
+
+    <script>
+        function toggleSelectAll(source) {
+            var checkboxes = document.getElementsByName('postId');
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
+        function performBulkAction() {
+            var action = document.getElementById("bulkAction").value;
+            if (action == "delete") {
+                var selectedPosts = [];
+                var checkboxes = document.getElementsByName('postId');
+                for (var i = 0, n = checkboxes.length; i < n; i++) {
+                    if (checkboxes[i].checked) {
+                        selectedPosts.push(checkboxes[i].value);
+                    }
+                }
+
+                if (selectedPosts.length > 0) {
+                    // Redirect to the delete endpoint with selected post IDs
+                    window.location.href = '/posts/bulkDelete?ids=' + selectedPosts.join(',');
+                } else {
+                    alert("Please select posts to delete.");
+                }
+            } else if (action == "publish") {
+                // Implement publish to blogger logic here
+                alert("Publish to Blogger action selected");
+            } else {
+                alert("Please select an action");
+            }
+        }
+    </script>
 </body>
 </html>

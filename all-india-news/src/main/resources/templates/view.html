@@ -1,19 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All India News</title>
+    <title>View Post</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .container h1, .container h2, .container p, .container a {
+            text-align: center;
+        }
+        .container p {
+            padding: 10px;
+            border: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .container a {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
             <th:block th:if="${#authorization.expression('isAuthenticated()')}">
-    <li><a href="/posts">Posts</a></li>
-</th:block>
+                <li><a href="/posts">Posts</a></li>
+            </th:block>
             <th:block th:if="${#authorization.expression('isAuthenticated()')}">
                 <li><a href="/logout" onclick="document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </th:block>
@@ -25,13 +44,10 @@
         </ul>
     </nav>
     <div class="container">
-        <h1>Welcome to All India News</h1>
-        <p>This is the home page.</p>
-
-        <h2>Trending Blogs</h2>
-        <ul>
-            <li th:each="blogId : ${trendingBlogs}" th:text="${blogId}"></li>
-        </ul>
+        <h1>View Post</h1>
+        <h2 th:text="${post.title}"></h2>
+        <p th:text="${post.content}"></p>
+        <a href="/posts">Back to Posts</a>
     </div>
 </body>
 </html>

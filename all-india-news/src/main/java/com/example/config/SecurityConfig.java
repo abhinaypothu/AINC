@@ -67,7 +67,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/login", "/showRegister", "/register", "/blogger/**").permitAll()
                         .requestMatchers("/static/**", "/favicon.ico", "/**").permitAll() // Allow access to static resources
-                        .requestMatchers("/continue", "/").hasRole("USER"))
+                        .requestMatchers("/continue", "/").hasRole("USER")
+                        .requestMatchers("/posts", "/post/*").permitAll())
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
